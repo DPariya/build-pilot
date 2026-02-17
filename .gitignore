@@ -1,0 +1,85 @@
+
+# ROOT LEVEL
+
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temp files
+tmp/
+.cache/
+*.swp
+*.swo
+
+
+# BACKEND (Node + Express)
+
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/coverage/
+
+# Backend env
+backend/.env
+backend/.env.*
+
+
+# FRONTEND (Next.js / React)
+
+
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+frontend/coverage/
+
+# Frontend env
+frontend/.env
+frontend/.env.*
+
+
+# Docker
+
+
+docker-data/
+*.pid
+docker-compose.override.yml
+
+
+# PostgreSQL Local Volume
+
+
+pgdata/
+
+
+# Redis
+
+
+dump.rdb
+
+
+# Testing
+
+
+coverage/
+
+
+# Misc
+
+
+*.tgz
