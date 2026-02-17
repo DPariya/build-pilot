@@ -1,10 +1,21 @@
 {
+  "name": "build-pilot-backend",
+  "version": "1.0.0",
+  "description": "build-pilot - Mini CI/CD Platform backend",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
   "dependencies": {
     "bull": "^4.16.5",
+    "cors": "^2.8.6",
     "dockerode": "^4.0.9",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "js-yaml": "^4.1.1",
+    "morgan": "^1.10.1",
     "pg": "^8.18.0",
     "redis": "^5.11.0",
     "ws": "^8.19.0"
