@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import webhookRoutes from "./routes/webhook.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import buildRoutes from "./routes/build.routes.js";
 
 const app = express();
 
@@ -34,6 +35,9 @@ app.use("/api/webhooks", webhookRoutes);
 
 // Project routes
 app.use("/api/projects", projectRoutes);
+
+// Build routes
+app.use("/api/builds", buildRoutes);
 
 // 404 handler
 app.use((req, res, next) => {

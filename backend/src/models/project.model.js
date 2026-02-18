@@ -19,3 +19,41 @@ export const findProjectByRepoUrl = async (repoUrl) => {
   );
   return result.rows[0];
 };
+
+export const findAll = async () => {
+  const { rows } = await pool.query(
+    `SELECT * FROM projects ORDER BY created_at DESC`,
+  );
+  return rows;
+};
+
+export const findById = async (id) => {
+  const { rows } = await pool.query(`SELECT * FROM projects WHERE id = $1`, [
+    id,
+  ]);
+  return rows[0];
+};
+
+export const updateProjectById = async (id, data) => {
+  const { name, repo_url, webhook_secret, default_branch } = data;
+
+  const { rows } = await pool.query(
+    `
+    UPDATE projects
+    SET name = $1,
+        repo_url = $2,
+        webhook_secret = $3,
+        default_branch = $4,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = $5
+    RETURNING *
+    `,
+    [name, repo_url, webhook_secret, default_branch, id],
+  );
+
+  return rows[0];
+};
+
+export const deleteProjectById = async (id) => {
+  await pool.query(`DELETE FROM projects WHERE id = $1`, [id]);
+};

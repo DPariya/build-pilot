@@ -10,3 +10,20 @@ export const createBuild = async (projectId, commitHash, branch, message) => {
 
   return result.rows[0];
 };
+
+export const findByProjectId = async function (projectId) {
+  const { rows } = await pool.query(
+    `
+    SELECT * FROM builds
+    WHERE project_id = $1
+    ORDER BY created_at DESC
+    `,
+    [projectId],
+  );
+  return rows;
+};
+
+export const findById = async function (id) {
+  const { rows } = await pool.query(`SELECT * FROM builds WHERE id = $1`, [id]);
+  return rows[0];
+};
