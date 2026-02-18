@@ -30,7 +30,7 @@ buildQueue.process("build", async (job) => {
     const config = parseBuildConfig(configPath);
 
     // 4. Run Docker build
-    const result = await runBuildPipeline(repoPath, config);
+    const result = await runBuildPipeline(repoPath, config, buildId);
     if (!result.success) {
       throw new Error(result.error);
     }

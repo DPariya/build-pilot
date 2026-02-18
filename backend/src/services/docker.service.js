@@ -3,11 +3,13 @@ import path from "path";
 import fs from "fs";
 import tar from "tar-fs";
 
+import { publisher } from "../config/redis.js";
+
 const docker = new Docker({
   socketPath: "/var/run/docker.sock",
 });
 
-export const runBuildPipeline = async (projectPath, config) => {
+export const runBuildPipeline = async (projectPath, config, buildId) => {
   const { image, steps } = config.build;
 
   try {
@@ -59,6 +61,8 @@ export const runBuildPipeline = async (projectPath, config) => {
             .toString("utf-8")
             .replace(/[\x00-\x08]/g, "");
           fullLogs += log;
+          // Publish to Redis
+          publisher.publish(`build-logs:${buildId}`, log);
           process.stdout.write(log); // temporary console streaming
         });
 
