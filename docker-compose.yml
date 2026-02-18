@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: buildpilot
-      POSTGRES_PASSWORD: buildpilot@#$9583
+      POSTGRES_PASSWORD: buildpilot
       POSTGRES_DB: buildpilot_db
     ports:
       - "5432:5432"
@@ -33,12 +33,12 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   
-  frontend:
-    build: ./client
-    ports:
-      - "3001:3001"
-    depends_on:
-      - backend
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     - backend
 
 volumes:
   pgdata:

@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 // Health check endpoint
-app.get("/health", (req, res) => {
+app.get("/health", (req, res, next) => {
   res.status(200).json({
     status: "OK",
     message: "Server is healthy",
@@ -20,12 +20,12 @@ app.get("/health", (req, res) => {
 });
 
 // 404 handler
-app.use((req, res) => {
+app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });
 });
 
 // Global error handler
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   console.error(err);
   res
     .status(err.status || 500)
