@@ -1,5 +1,6 @@
 import { findProjectByRepoUrl } from "../models/project.model.js";
 import { createBuild } from "../models/build.model.js";
+import { buildQueue } from "../config/queue.js";
 
 export const handleGithubWebhook = async (req, res) => {
   try {
@@ -28,9 +29,15 @@ export const handleGithubWebhook = async (req, res) => {
       branch,
       commitMessage,
     );
+    await buildQueue.add("build", {
+      buildId: build.id,
+      repoUrl: project.repo_url,
+      branch,
+      commitHash,
+    });
 
     return res.status(201).json({
-      message: "Build created",
+      message: "Build queued",
       buildId: build.id,
     });
   } catch (error) {

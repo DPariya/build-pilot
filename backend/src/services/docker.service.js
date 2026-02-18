@@ -1,6 +1,7 @@
 import Docker from "dockerode";
 import path from "path";
 import fs from "fs";
+import tar from "tar-fs";
 
 const docker = new Docker({
   socketPath: "/var/run/docker.sock",
@@ -25,16 +26,17 @@ export const runBuildPipeline = async (projectPath, config) => {
     const container = await docker.createContainer({
       Image: image,
       Tty: false,
-      Cmd: ["sh"],
+      Cmd: ["tail", "-f", "/dev/null"], // keep container running
       WorkingDir: "/app",
-      HostConfig: {
-        Binds: [`${projectPath}:/app`],
-      },
     });
 
     // 3️⃣ Start container
     await container.start();
     console.log("Container started.");
+
+    // Copy code into container
+    const tarStream = tar.pack(projectPath);
+    await container.putArchive(tarStream, { path: "/app" });
 
     let fullLogs = "";
 
@@ -52,7 +54,10 @@ export const runBuildPipeline = async (projectPath, config) => {
 
       await new Promise((resolve, reject) => {
         stream.on("data", (chunk) => {
-          const log = chunk.toString();
+          const log = chunk
+            .slice(8)
+            .toString("utf-8")
+            .replace(/[\x00-\x08]/g, "");
           fullLogs += log;
           process.stdout.write(log); // temporary console streaming
         });
