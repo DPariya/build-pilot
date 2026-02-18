@@ -3,9 +3,9 @@ name: my-app
 build:
   image: node:18
   steps:
-    - npm install
-    - npm test
-    - npm run build
+    - cd backend && npm install
+    - cd backend && npm test
+    - cd backend && npm run build
 
 deploy:
   target: production
