@@ -12,10 +12,10 @@ export const createProject = async (name, repoUrl) => {
   return result.rows[0];
 };
 export const findProjectByRepoUrl = async (repoUrl) => {
+  const normalized = repoUrl.replace(/\.git$/, "");
   const result = await pool.query(
-    `SELECT * FROM projects WHERE repo_url = $1`,
-    [repoUrl],
+    `SELECT * FROM projects WHERE REPLACE(repo_url, '.git', '') = $1`,
+    [normalized],
   );
-
   return result.rows[0];
 };
