@@ -11,6 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U buildpilot -d buildpilot_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -24,8 +29,10 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     environment:
       DATABASE_URL: postgresql://buildpilot:buildpilot@postgres:5432/buildpilot_db
       REDIS_URL: redis://redis:6379
@@ -33,12 +40,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "3001:3001"
-  #   depends_on:
-  #     - backend
+  frontend:
+    build: ./frontend
+    container_name: buildpilot_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
 
 volumes:
   pgdata:
