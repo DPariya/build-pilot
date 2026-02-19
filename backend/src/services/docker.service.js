@@ -4,6 +4,7 @@ import fs from "fs";
 import tar from "tar-fs";
 
 import { publisher } from "../config/redis.js";
+import { logError } from "../utils/logger.js";
 
 const docker = new Docker({
   socketPath: "/var/run/docker.sock",
@@ -87,6 +88,7 @@ export const runBuildPipeline = async (projectPath, config, buildId) => {
       logs: fullLogs,
     };
   } catch (error) {
+    logError("Build failed", error);
     console.error("Build failed:", error.message);
     return {
       success: false,

@@ -1,6 +1,7 @@
 import { findProjectByRepoUrl } from "../models/project.model.js";
 import { createBuild } from "../models/build.model.js";
 import { buildQueue } from "../config/queue.js";
+import { logError } from "../utils/logger.js";
 
 export const handleGithubWebhook = async (req, res) => {
   try {
@@ -31,6 +32,7 @@ export const handleGithubWebhook = async (req, res) => {
     );
     await buildQueue.add("build", {
       buildId: build.id,
+      projectId: project.id,
       repoUrl: project.repo_url,
       branch,
       commitHash,
@@ -41,6 +43,7 @@ export const handleGithubWebhook = async (req, res) => {
       buildId: build.id,
     });
   } catch (error) {
+    logError("Error processing GitHub webhook", error);
     console.error(error);
     return res.status(500).json({ message: "Webhook processing failed" });
   }

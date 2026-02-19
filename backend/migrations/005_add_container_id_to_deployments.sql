@@ -1,0 +1,1 @@
+ALTER TABLE deployments ADD COLUMN container_id VARCHAR(255);

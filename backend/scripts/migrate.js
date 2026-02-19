@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 import pool from "../src/config/db.js";
+import { logError } from "../src/utils/logger.js";
 
 const migrate = async () => {
   const client = await pool.connect();
@@ -47,7 +48,8 @@ const migrate = async () => {
     }
     console.log("Migrations completed successfully");
   } catch (error) {
-    console.error("Migration failed:", error);
+    // console.error("Migration failed:", error);
+    logError("Migration", error);
   } finally {
     client.release();
     await pool.end();

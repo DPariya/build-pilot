@@ -1,5 +1,6 @@
 import { WebSocketServer } from "ws";
 import Redis from "ioredis";
+import { logError } from "../utils/logger";
 
 const redisUrl = process.env.REDIS_URL || "redis://redis:6379";
 
@@ -24,7 +25,8 @@ function setupWebSocket(server) {
           }
         });
       } catch (err) {
-        console.error("WebSocket error:", err);
+        // console.error("WebSocket error:", err);
+        logError("WebSocket error", err);
       }
     });
 

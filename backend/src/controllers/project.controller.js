@@ -1,4 +1,5 @@
 import * as Project from "../models/project.model.js";
+import { logError } from "./../utils/logger";
 
 export const createProjectHandler = async (req, res) => {
   try {
@@ -17,6 +18,7 @@ export const createProjectHandler = async (req, res) => {
       project,
     });
   } catch (error) {
+    logError("Error creating project", error);
     if (error.code === "23505") {
       // unique violation
       return res.status(409).json({
@@ -36,6 +38,7 @@ export const getAllProjects = async (req, res) => {
     const projects = await Project.findAll();
     res.json(projects);
   } catch (err) {
+    logError("Error fetching projects", err);
     console.error(err);
     res.status(500).json({ message: "Failed to fetch projects" });
   }
@@ -51,6 +54,7 @@ export const getProjectById = async (req, res) => {
 
     res.json(project);
   } catch (err) {
+    logError("Error fetching project by ID", err);
     res.status(500).json({ message: "Failed to fetch project" });
   }
 };
@@ -65,6 +69,7 @@ export const updateProject = async (req, res) => {
 
     res.json(updated);
   } catch (err) {
+    logError("Error updating project", err);
     res.status(500).json({ message: "Failed to update project" });
   }
 };
@@ -74,6 +79,7 @@ export const deleteProject = async (req, res) => {
     await Project.deleteProjectById(req.params.id);
     res.status(204).send();
   } catch (err) {
+    logError("Error deleting project", err);
     res.status(500).json({ message: "Failed to delete project" });
   }
 };
@@ -90,6 +96,7 @@ export const getProjectByRepoUrl = async (req, res) => {
     }
     res.json(project);
   } catch (err) {
+    logError("Error fetching project by repo URL", err);
     res.status(500).json({ message: "Failed to fetch project by repo URL" });
   }
 };
