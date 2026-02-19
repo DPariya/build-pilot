@@ -6,23 +6,23 @@ A lightweight CI/CD system that automatically builds and deploys applications wh
 
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌─────────────┐
-│   GitHub     │────▶│  Express Server  │────▶│  Bull Queue  │
-│  (Webhook)   │     │  (API + WebSocket)│     │   (Redis)    │
+│   GitHub    │────▶│  Express Server  │───▶│  Bull Queue │
+│  (Webhook)  │     │  (API + WebSocket)│    │   (Redis)   │
 └─────────────┘     └──────────────────┘     └──────┬──────┘
-                                                     │
-                    ┌──────────────────┐              │
-                    │   PostgreSQL     │◀─────────────┤
-                    │  (Build History) │              │
-                    └──────────────────┘              ▼
+                                                    │
+                    ┌──────────────────┐            │
+                    │   PostgreSQL     │◀──────────┤
+                    │  (Build History) │            │
+                    └──────────────────┘            ▼
                                               ┌─────────────┐
-                    ┌──────────────────┐      │ Build Worker │
-                    │  React Frontend  │      │  (Dockerode) │
+                    ┌──────────────────┐      │ Build Worker│
+                    │  React Frontend  │      │  (Dockerode)│
                     │   (Dashboard)    │      └──────┬──────┘
-                    └──────────────────┘              │
+                    └──────────────────┘             │
                                                      ▼
                                               ┌─────────────┐
-                                              │   Docker     │
-                                              │ (Container)  │
+                                              │   Docker    │
+                                              │ (Container) │
                                               └─────────────┘
 ```
 
@@ -103,13 +103,7 @@ This starts:
 - **Backend** (port 3000) — API server
 - **Frontend** (port 80) — dashboard
 
-### 4. Run database migrations
-
-```bash
-docker exec -it build-pilot-backend-1 node scripts/migrate.js
-```
-
-### 5. Open the dashboard
+### 4. Open the dashboard
 
 Visit `http://localhost` in your browser.
 
