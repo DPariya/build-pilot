@@ -7,6 +7,8 @@ RUN npm install
 
 COPY . .
 
+RUN apt-get update && apt-get install -y git
+
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node scripts/migrate.js && node server.js"]

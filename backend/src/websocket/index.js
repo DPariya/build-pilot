@@ -1,6 +1,6 @@
 import { WebSocketServer } from "ws";
 import Redis from "ioredis";
-import { logError } from "../utils/logger";
+import { logError } from "../utils/logger.js";
 
 const redisUrl = process.env.REDIS_URL || "redis://redis:6379";
 

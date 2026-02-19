@@ -1,5 +1,5 @@
 import * as Project from "../models/project.model.js";
-import { logError } from "./../utils/logger";
+import { logError } from "./../utils/logger.js";
 
 export const createProjectHandler = async (req, res) => {
   try {
