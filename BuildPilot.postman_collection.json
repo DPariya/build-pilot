@@ -1,0 +1,199 @@
+{
+  "info": {
+    "name": "BuildPilot API",
+    "description": "API collection for BuildPilot - Mini CI/CD Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "projectId",
+      "value": ""
+    },
+    {
+      "key": "buildId",
+      "value": ""
+    },
+    {
+      "key": "deploymentId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health",
+            "description": "Check if the server is running"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/projects",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"sample-app\",\n  \"repo_url\": \"https://github.com/DPariya/sample-app.git\"\n}"
+            },
+            "description": "Register a new project. Webhook secret is auto-generated."
+          }
+        },
+        {
+          "name": "List All Projects",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects",
+            "description": "Get all registered projects"
+          }
+        },
+        {
+          "name": "Get Project by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/{{projectId}}",
+            "description": "Get a single project's details"
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/projects/{{projectId}}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"updated-name\",\n  \"repo_url\": \"https://github.com/DPariya/sample-app.git\"\n}"
+            },
+            "description": "Update project name or repo URL"
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/projects/{{projectId}}",
+            "description": "Delete a project and all associated builds"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Builds",
+      "item": [
+        {
+          "name": "List Builds for Project",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/builds",
+            "description": "Get all builds for a specific project"
+          }
+        },
+        {
+          "name": "Get Build by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/builds/{{buildId}}",
+            "description": "Get build details including logs, status, and config"
+          }
+        },
+        {
+          "name": "Retry Failed Build",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/builds/{{buildId}}/retry",
+            "description": "Retry a failed build. Only works on builds with status 'failed'."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deployments",
+      "item": [
+        {
+          "name": "List Deployments for Project",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/deployments/{{projectId}}/deployments",
+            "description": "Get all deployments for a specific project"
+          }
+        },
+        {
+          "name": "Rollback Deployment",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments/{{deploymentId}}/rollback",
+            "description": "Rollback a deployment. Stops current container, marks as rolled back, and re-deploys the previous successful deployment."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "GitHub Webhook (Push Event)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/webhooks/github",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-github-event",
+                "value": "push"
+              },
+              {
+                "key": "x-hub-signature-256",
+                "value": "sha256=your_generated_signature_here"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ref\": \"refs/heads/main\",\n  \"after\": \"abc123commitsha\",\n  \"repository\": {\n    \"clone_url\": \"https://github.com/DPariya/sample-app.git\"\n  },\n  \"head_commit\": {\n    \"message\": \"Test commit from Postman\"\n  }\n}"
+            },
+            "description": "Simulates a GitHub push webhook. To generate the signature:\n\n1. Use your GITHUB_WEBHOOK_SECRET from .env\n2. Run: node -e \"const crypto = require('crypto'); console.log('sha256=' + crypto.createHmac('sha256', 'your_secret').update(JSON.stringify(payload)).digest('hex'));\"\n3. Paste the output in x-hub-signature-256 header\n\nNote: The payload body must be the exact same string used to generate the signature."
+          }
+        }
+      ]
+    },
+    {
+      "name": "WebSocket",
+      "item": [
+        {
+          "name": "Real-time Build Logs",
+          "request": {
+            "method": "GET",
+            "url": "ws://localhost:3000",
+            "description": "WebSocket connection for real-time build logs.\n\nAfter connecting, send:\n{\"buildId\": \"<build-uuid>\"}\n\nYou will receive log messages in format:\n{\"log\": \"log line content\"}\n\nNote: Use browser console or a WebSocket client to test:\nconst ws = new WebSocket('ws://localhost:3000');\nws.onopen = () => ws.send(JSON.stringify({buildId: 'your-build-id'}));\nws.onmessage = (e) => console.log(e.data);"
+          }
+        }
+      ]
+    }
+  ]
+}
