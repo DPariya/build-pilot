@@ -1,6 +1,7 @@
 import Docker from "dockerode";
 import { updateStatus } from "../models/deployment.model.js";
 import { logError } from "../utils/logger.js";
+import { findByProjectId } from "../models/deployment.model.js";
 
 const docker = new Docker({
   socketPath: "/var/run/docker.sock",
