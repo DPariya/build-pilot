@@ -14,6 +14,19 @@ export const deployService = async (config, deploymentId) => {
     const envArray = Object.entries(envVars).map(
       ([key, value]) => `${key}=${value}`,
     );
+    //before creating new container, stop and remove old one if exists
+    const previousDeployments = await findByProjectId(projectId);
+    for (const dep of previousDeployments) {
+      if (dep.container_id && dep.status === "success") {
+        try {
+          const old = docker.getContainer(dep.container_id);
+          await old.stop();
+          await old.remove();
+        } catch (e) {
+          /* already stopped */
+        }
+      }
+    }
 
     const container = await docker.createContainer({
       Image: image,
